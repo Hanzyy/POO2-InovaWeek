@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model Aluno {
+  nomeAluno String
+  matricula Int @id @unique
+  email String @unique
+  liderGrupo Grupo? @relation("lideranca")
+  grupo Grupo @relation("Participacao",fields: [nomeGrupo], references: [nome])
+  nomeGrupo String @unique
+  avaliacao Avaliacao? @relation("AvaliacaoAluno")
+}
+
+model Professor {
+  matricula Int @id @unique
+  nome String
+  email String @unique
+  avaliacao Avaliacao? @relation("AvaliacaoProf")
+}
+
+
+model Grupo {
+  nome String @id @unique
+  lider Aluno @relation("lideranca", fields: [matriculaLider], references: [matricula])
+  matriculaLider Int @unique
+  alunos Aluno[] @relation("Participacao")
+  avaliacao Avaliacao? @relation("Avaliacao")
+}
+
+model Avaliacao {
+  avaliador String @id
+  avaliadorAluno Aluno @relation("AvaliacaoAluno", fields: [matriculaAluno], references: [matricula])
+  matriculaAluno Int @unique
+  avaliadorProf Professor @relation("AvaliacaoProf", fields: [matriculaProf], references: [matricula])
+  matriculaProf Int @unique
+  avaliacaoGrupo Grupo @relation("Avaliacao", fields: [grupoAvaliado], references: [nome])
+  grupoAvaliado String @unique
+  notaOriginalidade Float
+  notaApresentacao Float
+  notaImpactoSocial Float
+  notaExecucao Float
+  notaViabilidade Float
+  notaMedia Float
+}
