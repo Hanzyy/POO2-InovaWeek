@@ -50,5 +50,5 @@ model Avaliacao {
   notaImpactoSocial Float
   notaExecucao Float
   notaViabilidade Float
-  notaMedia Float
+  notaMedia Float?
 }
